@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>がっこうプリント・ヘルパー</title>
+<meta name="description" content="学校のプリントを写真に撮ると、日付・やること・持ち物・お金を、あなたのことばで説明します。">
+<!-- 翻訳（English / 中文 / Português / Filipino / Tiếng Việt）は公開前にネイティブ確認が必要 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fbf7ef;--surface:#fff;--ink:#2a2520;--ink-2:#6a6157;--rule:#e6dccb;--line:#c9d8ea;
+  --primary:#a8431a;--primary-hover:#8f3815;--on-primary:#fff;--mark:#fff1a8;
+  --round:"Zen Maru Gothic","Hiragino Maru Gothic ProN",var(--sans);
+  --sans:"Noto Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1a1712;--surface:#24201a;--ink:#f1ece3;--ink-2:#b9afa2;--rule:#3b342b;--line:#2f3c4c;
+  --primary:#ff9e6e;--primary-hover:#ffb48f;--on-primary:#24110a;--mark:#5a4c12}}
+:root[data-theme="dark"]{
+  --paper:#1a1712;--surface:#24201a;--ink:#f1ece3;--ink-2:#b9afa2;--rule:#3b342b;--line:#2f3c4c;
+  --primary:#ff9e6e;--primary-hover:#ffb48f;--on-primary:#24110a;--mark:#5a4c12}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.9 var(--sans)}
+a{color:var(--primary)}
+a:focus-visible,button:focus-visible,.btn:focus-visible{outline:3px solid var(--primary);outline-offset:2px;border-radius:10px}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--rule)}
+.logo{font:700 18px/1.3 var(--round)}
+.langs{display:flex;flex-wrap:wrap;gap:6px}
+.langs button{font:400 14px/1 var(--sans);color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:99px;padding:8px 12px;cursor:pointer;min-height:36px}
+.langs button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+h1,h2,h3{font-family:var(--round);font-weight:700;line-height:1.5;margin:0}
+h1{font-size:clamp(28px,5.4vw,38px)}
+h2{font-size:clamp(22px,3.4vw,26px);margin-bottom:16px}
+h3{font-size:20px}
+p{margin:0 0 16px}
+.muted{color:var(--ink-2)}.small{font-size:15px}
+.hero{display:grid;gap:40px;padding:56px 0 64px}
+@media(min-width:860px){.hero{grid-template-columns:1fr 1.1fr;align-items:center}}
+.lead{font-size:19px;margin-top:20px}
+.btn{display:inline-flex;align-items:center;min-height:52px;font:700 17px/1.2 var(--sans);padding:14px 26px;border-radius:10px;text-decoration:none;background:var(--primary);color:var(--on-primary)}
+.btn:hover{background:var(--primary-hover)}
+/* プリント見本 */
+.sample{display:grid;gap:16px}
+.print{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--line) 31px,var(--line) 32px);background-position:0 20px;line-height:32px;font-size:15px}
+.print .ptitle{font-weight:700;text-align:center;margin:0 0 8px;line-height:32px}
+.print p{margin:0}
+.print .date{text-align:right;font-size:13px}
+mark{background:var(--mark);color:inherit;padding:0 2px;border-radius:2px}
+.num{flex-shrink:0;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);font:700 12px/1 var(--sans);vertical-align:2px;margin-right:4px}
+.explain{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px 22px}
+.explain h3{font-size:16px;color:var(--ink-2);font-family:var(--sans);margin-bottom:8px}
+.explain ol{list-style:none;margin:0;padding:0}
+.explain li{display:flex;gap:8px;padding:8px 0;border-top:1px solid var(--rule)}
+.explain li:first-child{border-top:0}
+section{padding:64px 0;border-top:1px solid var(--rule)}
+@media(max-width:640px){section{padding:44px 0}.hero{padding:40px 0 48px}}
+.narrow{max-width:36em}
+dl.terms{margin:0;display:grid;gap:20px}
+@media(min-width:760px){dl.terms{grid-template-columns:1fr 1fr;gap:32px}}
+dl.terms dt{font:700 20px/1.4 var(--round)}
+dl.terms dt small{font:400 14px var(--sans);color:var(--ink-2);margin-left:8px}
+dl.terms dd{margin:8px 0 0}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:24px}
+@media(min-width:760px){ol.steps{grid-template-columns:repeat(3,1fr)}}
+ol.steps li{counter-increment:s;padding-top:12px;border-top:3px solid var(--ink)}
+ol.steps li::before{content:counter(s);display:block;font:700 28px/1.2 var(--round);color:var(--primary);margin-bottom:4px}
+.cta-box{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:32px}
+.todo{background:#fff3b0;color:#3a3000;padding:0 4px;border-radius:2px}
+footer{padding:28px 0 48px;border-top:1px solid var(--rule);font-size:14px;color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="logo" data-t="name">がっこうプリント・ヘルパー</span>
+    <nav class="langs" aria-label="Language">
+      <button type="button" data-lang="ja" lang="ja">やさしいにほんご</button>
+      <button type="button" data-lang="en" lang="en">English</button>
+      <button type="button" data-lang="zh" lang="zh-Hans">中文</button>
+      <button type="button" data-lang="pt" lang="pt-BR">Português</button>
+      <button type="button" data-lang="fil" lang="fil">Filipino</button>
+      <button type="button" data-lang="vi" lang="vi">Tiếng Việt</button>
+    </nav>
+  </header>
+
+  <main>
+  <div class="hero">
+    <div>
+      <h1 data-t="h1">がっこうの プリント、しゃしんを とるだけ。</h1>
+      <p class="lead" data-t="lead">いつ・なにを する・もちもの・おかね を、あなたの ことばで せつめいします。</p>
+      <a class="btn" href="#signup" data-t="cta">むりょうで ためす</a>
+    </div>
+
+    <div class="sample">
+      <div class="print" lang="ja" aria-label="学校プリントの見本">
+        <p class="date">令和8年11月26日</p>
+        <p class="ptitle">遠足のお知らせ</p>
+        <p>保護者様　12月の遠足について、下記のとおりお知らせします。</p>
+        <p><span class="num">1</span><mark>12月4日（金）まで</mark>に参加申込書を担任へ提出してください。</p>
+        <p><span class="num">2</span>持ち物：<mark>弁当、水筒、敷物</mark></p>
+        <p><span class="num">3</span>費用：<mark>500円</mark>を封筒に入れて持たせてください。</p>
+      </div>
+      <div class="explain">
+        <h3 data-t="exH">せつめい</h3>
+        <ol>
+          <li><span class="num">1</span><span data-t="ex1">12がつ 4か（きんようび）までに、「さんか もうしこみしょ」を たんにんの せんせいに だします。</span></li>
+          <li><span class="num">2</span><span data-t="ex2">もちもの：おべんとう、すいとう、しきもの（すわる ための シート）。</span></li>
+          <li><span class="num">3</span><span data-t="ex3">おかね：500えんを ふうとうに いれて、こどもに もたせます。</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <section aria-labelledby="diff">
+    <h2 id="diff" data-t="diffH">にほんの がっこうの ことばも せつめいします</h2>
+    <p class="narrow" data-t="diffP">ほんやく しても、いみが わからない ことばが あります。そういう ことばも、わかりやすく せつめいします。</p>
+    <dl class="terms">
+      <div><dt lang="ja">体操服<small>たいそうふく</small></dt><dd data-t="t1">たいいくの じかんに きる ふく です。がっこうが きめた ものを かう ことが おおい です。</dd></div>
+      <div><dt lang="ja">連絡帳<small>れんらくちょう</small></dt><dd data-t="t2">せんせいと いえの あいだで つかう ノート です。やすむ ときや、せんせいに つたえたい ことを かきます。</dd></div>
+    </dl>
+  </section>
+
+  <section aria-labelledby="how">
+    <h2 id="how" data-t="howH">つかいかた</h2>
+    <ol class="steps">
+      <li><h3 data-t="s1h">しゃしんを とる</h3><p data-t="s1">プリントを スマホで とります。</p></li>
+      <li><h3 data-t="s2h">ことばを えらぶ</h3><p data-t="s2">あなたが よめる ことばを えらびます。</p></li>
+      <li><h3 data-t="s3h">やる ことを みる</h3><p data-t="s3">しめきりや もちものを リストで みられます。カレンダーにも いれられます。</p></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="safe">
+    <h2 id="safe" data-t="safeH">あんしんして つかえるように</h2>
+    <div class="narrow">
+      <p data-t="safe1">しゃしんは、せつめいが おわったら けします。ほぞん しません。</p>
+      <p data-t="safe2">きかいが じどうで せつめいするので、まちがいが ある かも しれません。だいじな ことは、がっこうに きいて ください。</p>
+    </div>
+  </section>
+
+  <section id="signup" aria-labelledby="su">
+    <div class="cta-box">
+      <h2 id="su" data-t="suH">むりょうで ためす</h2>
+      <p class="narrow" data-t="suP">じゅんびが できたら、メールで おしらせ します。おかねは かかりません。</p>
+      <a class="btn" href="#" data-form-url data-t="suBtn">もうしこむ</a>
+    </div>
+  </section>
+  </main>
+
+  <footer>
+    <p><span data-t="op">うんえい</span>：わかち舎　<a href="../privacy.html" lang="ja">個人情報の取り扱い（Privacy）</a></p>
+  </footer>
+</div>
+
+<script>
+const T={
+ ja:{},
+ en:{name:"School Print Helper",h1:"Just take a photo of the school handout.",lead:"We explain when, what to do, what to bring, and how much money — in your language.",cta:"Try it for free",exH:"Explanation",
+  ex1:"Hand in the participation form to your child's homeroom teacher by Friday, December 4.",ex2:"Bring: a packed lunch, a water bottle, and a mat to sit on.",ex3:"Money: put 500 yen in an envelope and give it to your child to take to school.",
+  diffH:"We also explain Japanese school words",diffP:"Some words are hard to understand even after translation. We explain those words simply.",
+  t1:"Clothes worn in P.E. class. Many schools decide the style, so you usually buy the one the school chooses.",t2:"A notebook that goes between the teacher and your home. Write in it when your child will be absent or when you want to tell the teacher something.",
+  howH:"How it works",s1h:"Take a photo",s1:"Take a photo of the handout with your phone.",s2h:"Choose a language",s2:"Choose the language you can read.",s3h:"See what to do",s3:"See deadlines and things to bring in a list. You can also add them to your calendar.",
+  safeH:"Safe to use",safe1:"Photos are deleted after the explanation is made. We do not keep them.",safe2:"Explanations are made automatically, so there may be mistakes. Please ask the school about anything important.",
+  suH:"Try it for free",suP:"We will email you when it is ready. It is free.",suBtn:"Sign up",op:"Operated by"},
+ zh:{name:"学校通知小帮手",h1:"学校发的通知，拍张照片就好。",lead:"用你的语言说明：什么时候、要做什么、要带什么、要交多少钱。",cta:"免费试用",exH:"说明",
+  ex1:"请最晚在12月4日（周五），把参加申请表交给班主任。",ex2:"携带物品：便当、水壶、野餐垫（坐在地上用的垫子）。",ex3:"费用：把500日元装进信封，让孩子带去学校。",
+  diffH:"也会解释日本学校特有的词语",diffP:"有些词即使翻译了也很难理解。我们会用简单的方式解释。",
+  t1:"上体育课时穿的衣服。很多学校会指定款式，一般需要购买学校指定的。",t2:"老师和家长之间来回传递的联络本。孩子请假，或有事想告诉老师时，写在上面。",
+  howH:"使用方法",s1h:"拍照",s1:"用手机拍下学校的通知。",s2h:"选择语言",s2:"选择你看得懂的语言。",s3h:"查看要做的事",s3:"截止日期和要带的东西会整理成清单，也可以加入日历。",
+  safeH:"放心使用",safe1:"说明完成后，照片会被删除，不会保存。",safe2:"说明是自动生成的，可能会有错误。重要的事情请向学校确认。",
+  suH:"免费试用",suP:"准备好后，我们会发邮件通知你。不收取任何费用。",suBtn:"申请试用",op:"运营方"},
+ pt:{name:"Ajudante de Bilhetes Escolares",h1:"É só tirar uma foto do bilhete da escola.",lead:"Explicamos no seu idioma: quando, o que fazer, o que levar e quanto pagar.",cta:"Experimente grátis",exH:"Explicação",
+  ex1:"Entregue o formulário de participação ao professor responsável pela turma até sexta-feira, 4 de dezembro.",ex2:"Levar: marmita (bentô), garrafa de água e uma esteira para sentar.",ex3:"Dinheiro: coloque 500 ienes em um envelope e entregue ao seu filho para levar à escola.",
+  diffH:"Também explicamos palavras da escola japonesa",diffP:"Algumas palavras são difíceis de entender mesmo traduzidas. Nós explicamos de forma simples.",
+  t1:"Roupa usada na aula de educação física. Muitas escolas definem o modelo, por isso normalmente é preciso comprar o indicado pela escola.",t2:"Um caderno que vai e volta entre o professor e a sua casa. Escreva nele quando seu filho for faltar ou quando quiser avisar algo ao professor.",
+  howH:"Como funciona",s1h:"Tire uma foto",s1:"Tire uma foto do bilhete com o celular.",s2h:"Escolha o idioma",s2:"Escolha o idioma que você consegue ler.",s3h:"Veja o que fazer",s3:"Veja em uma lista os prazos e o que levar. Também é possível adicionar ao calendário.",
+  safeH:"Uso seguro",safe1:"As fotos são apagadas depois da explicação. Não guardamos as fotos.",safe2:"As explicações são automáticas e podem ter erros. Para assuntos importantes, confirme com a escola.",
+  suH:"Experimente grátis",suP:"Quando estiver pronto, avisaremos por e-mail. É grátis.",suBtn:"Inscrever-se",op:"Operado por"},
+ fil:{name:"School Print Helper",h1:"Kunan lang ng litrato ang sulat mula sa paaralan.",lead:"Ipapaliwanag namin sa inyong wika: kailan, ano ang gagawin, ano ang dadalhin, at magkano ang babayaran.",cta:"Subukan nang libre",exH:"Paliwanag",
+  ex1:"Ibigay ang form ng pagsali sa homeroom teacher bago o sa Biyernes, Disyembre 4.",ex2:"Dalhin: baon na pananghalian (bento), bote ng tubig, at banig na mauupuan.",ex3:"Pera: Ilagay ang 500 yen sa sobre at ipadala sa inyong anak papasok sa paaralan.",
+  diffH:"Ipinapaliwanag din namin ang mga salita sa paaralan sa Japan",diffP:"May mga salitang mahirap intindihin kahit naisalin na. Ipapaliwanag namin ang mga ito nang simple.",
+  t1:"Damit na isinusuot sa klase ng P.E. Kadalasan, ang paaralan ang nagpapasya ng disenyo, kaya kadalasang binibili ang itinakda ng paaralan.",t2:"Notebook na pinagpapasahan ng guro at ng inyong bahay. Isulat dito kapag liliban ang inyong anak o kapag may gusto kayong sabihin sa guro.",
+  howH:"Paano gamitin",s1h:"Kumuha ng litrato",s1:"Kunan ng litrato ang sulat gamit ang inyong phone.",s2h:"Pumili ng wika",s2:"Piliin ang wikang nababasa ninyo.",s3h:"Tingnan ang gagawin",s3:"Makikita ang mga deadline at dadalhin sa isang listahan. Puwede rin itong ilagay sa calendar.",
+  safeH:"Ligtas gamitin",safe1:"Binubura ang litrato pagkatapos ng paliwanag. Hindi namin ito sine-save.",safe2:"Awtomatiko ang paliwanag kaya maaaring may mali. Para sa mahahalagang bagay, magtanong sa paaralan.",
+  suH:"Subukan nang libre",suP:"Mag-e-email kami kapag handa na. Libre ito.",suBtn:"Mag-sign up",op:"Pinapatakbo ng"},
+ vi:{name:"Trợ lý Thông báo Trường học",h1:"Chỉ cần chụp ảnh thông báo của trường.",lead:"Chúng tôi giải thích bằng ngôn ngữ của bạn: khi nào, cần làm gì, mang gì và bao nhiêu tiền.",cta:"Dùng thử miễn phí",exH:"Giải thích",
+  ex1:"Nộp đơn đăng ký tham gia cho giáo viên chủ nhiệm chậm nhất là thứ Sáu, ngày 4 tháng 12.",ex2:"Mang theo: cơm hộp (bento), bình nước và tấm trải để ngồi.",ex3:"Tiền: cho 500 yên vào phong bì và đưa cho con mang đến trường.",
+  diffH:"Chúng tôi cũng giải thích những từ riêng của trường học Nhật Bản",diffP:"Có những từ dù đã dịch vẫn khó hiểu. Chúng tôi giải thích những từ đó một cách đơn giản.",
+  t1:"Quần áo mặc trong giờ thể dục. Nhiều trường quy định mẫu riêng, nên thường phải mua đúng mẫu của trường.",t2:"Sổ liên lạc qua lại giữa giáo viên và gia đình. Hãy viết vào đây khi con nghỉ học hoặc khi muốn nhắn gì cho giáo viên.",
+  howH:"Cách dùng",s1h:"Chụp ảnh",s1:"Chụp ảnh thông báo bằng điện thoại.",s2h:"Chọn ngôn ngữ",s2:"Chọn ngôn ngữ bạn đọc được.",s3h:"Xem việc cần làm",s3:"Xem hạn chót và đồ cần mang dưới dạng danh sách. Bạn cũng có thể thêm vào lịch.",
+  safeH:"Yên tâm sử dụng",safe1:"Ảnh sẽ bị xóa sau khi giải thích xong. Chúng tôi không lưu ảnh.",safe2:"Phần giải thích được tạo tự động nên có thể có sai sót. Với việc quan trọng, hãy hỏi lại nhà trường.",
+  suH:"Dùng thử miễn phí",suP:"Khi sẵn sàng, chúng tôi sẽ gửi email cho bạn. Không mất phí.",suBtn:"Đăng ký",op:"Đơn vị vận hành"}
+};
+// 公開する言語。ネイティブ確認が済んだ言語をここに追加する（zh, pt, fil, vi は確認待ち）
+const PUBLISHED=["ja","en"];
+document.querySelectorAll(".langs button").forEach(btn=>{if(!PUBLISHED.includes(btn.dataset.lang))btn.remove()});
+const HTML_LANG={ja:"ja",en:"en",zh:"zh-Hans",pt:"pt-BR",fil:"fil",vi:"vi"};
+const nodes=[...document.querySelectorAll("[data-t]")];
+nodes.forEach(n=>{T.ja[n.dataset.t]=n.textContent});
+function setLang(l){
+  const d=T[l]||T.ja;
+  nodes.forEach(n=>{if(d[n.dataset.t])n.textContent=d[n.dataset.t]});
+  document.documentElement.lang=HTML_LANG[l]||"ja";
+  document.querySelectorAll(".langs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===l));
+  try{localStorage.setItem("lang",l)}catch(e){}
+}
+document.querySelectorAll(".langs button").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.lang)));
+let start="ja";
+try{start=localStorage.getItem("lang")||""}catch(e){}
+if(!PUBLISHED.includes(start)){const n=(navigator.language||"ja").toLowerCase();start=n.startsWith("zh")?"zh":n.startsWith("pt")?"pt":(n.startsWith("fil")||n.startsWith("tl"))?"fil":n.startsWith("vi")?"vi":n.startsWith("en")?"en":"ja";if(!PUBLISHED.includes(start))start=n.startsWith("ja")?"ja":"en"}
+setLang(start);
+</script>
+</body>
+</html>
