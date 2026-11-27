@@ -226,5 +226,8 @@ try{start=localStorage.getItem("lang")||""}catch(e){}
 if(!PUBLISHED.includes(start)){const n=(navigator.language||"ja").toLowerCase();start=n.startsWith("zh")?"zh":n.startsWith("pt")?"pt":(n.startsWith("fil")||n.startsWith("tl"))?"fil":n.startsWith("vi")?"vi":n.startsWith("en")?"en":"ja";if(!PUBLISHED.includes(start))start=n.startsWith("ja")?"ja":"en"}
 setLang(start);
 </script>
+<!-- analytics:start -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "063fe2acdfef4ae6ba0843623bf353c2"}'></script>
+<!-- analytics:end -->
 </body>
 </html>
